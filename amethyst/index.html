@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Amethyst — Furniture of Distinction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F7F4EF;
+    --surface: #EDEAE3;
+    --surface2: #E3DED5;
+    --amethyst: #5B3A9A;
+    --amethyst-dim: #7B5ABF;
+    --ivory: #1A1714;
+    --ivory-dim: #5A5450;
+    --muted: #9A948E;
+    --border: #D4CFC7;
+    --border2: #C2BAB0;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ivory);
+    font-family: var(--sans);
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 0 clamp(20px, 5vw, 60px);
+    height: 72px;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: background 0.5s, border-color 0.5s;
+    border-bottom: 1px solid transparent;
+  }
+  nav.scrolled {
+    background: rgba(247,244,239,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-color: var(--border);
+  }
+  .nav-logo {
+    font-family: var(--serif);
+    font-size: clamp(18px, 3vw, 22px);
+    font-weight: 300;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ivory);
+    text-decoration: none;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .nav-logo span {
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: var(--amethyst);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .nav-links {
+    display: flex; gap: clamp(20px, 3vw, 44px);
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ivory-dim);
+    text-decoration: none;
+    transition: color 0.25s;
+  }
+  .nav-links a:hover { color: var(--ivory); }
+  .nav-right {
+    display: flex; align-items: center; gap: 20px;
+  }
+  .nav-cta {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ivory);
+    border: 1px solid var(--amethyst-dim);
+    padding: 8px 20px;
+    text-decoration: none;
+    transition: background 0.25s, border-color 0.25s;
+  }
+  .nav-cta:hover { background: var(--amethyst-dim); border-color: var(--amethyst); }
+  .nav-hamburger {
+    display: none;
+    flex-direction: column; gap: 5px;
+    cursor: pointer; padding: 4px;
+  }
+  .nav-hamburger span {
+    display: block; width: 22px; height: 1px;
+    background: var(--ivory);
+    transition: transform 0.3s, opacity 0.3s;
+  }
+
+  /* Mobile Nav */
+  .mobile-menu {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--bg);
+    z-index: 99;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center; gap: 32px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s;
+  }
+  .mobile-menu.open { opacity: 1; pointer-events: all; }
+  .mobile-menu a {
+    font-family: var(--serif);
+    font-size: clamp(28px, 8vw, 42px);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    color: var(--ivory-dim);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .mobile-menu a:hover { color: var(--amethyst); }
+  .mobile-menu-close {
+    position: absolute; top: 24px; right: clamp(20px,5vw,60px);
+    font-size: 24px; cursor: pointer; color: var(--ivory-dim);
+    background: none; border: none;
+    font-family: var(--sans);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative; height: 100svh; min-height: 600px;
+    overflow: hidden;
+    display: flex; align-items: flex-end;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: var(--bg);
+  }
+  .hero-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center 40%;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+    transform: scale(1.03);
+    transition: opacity 1.2s ease, transform 6s ease;
+  }
+  .hero-img.loaded { opacity: 0.75; transform: scale(1); }
+  .hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(247,244,239,0.92) 0%,
+      rgba(247,244,239,0.2) 50%,
+      rgba(247,244,239,0.05) 100%
+    );
+  }
+  .hero-content {
+    position: relative; z-index: 2;
+    padding: clamp(40px,8vw,100px) clamp(20px,6vw,80px);
+    max-width: 900px;
+  }
+  .hero-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--amethyst);
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 12px;
+    opacity: 0; animation: fadeUp 0.8s 0.4s forwards;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: block; width: 30px; height: 1px;
+    background: var(--amethyst);
+  }
+  .hero-title {
+    font-family: var(--serif);
+    font-size: clamp(44px, 8vw, 96px);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin-bottom: 28px;
+    color: var(--ivory);
+    opacity: 0; animation: fadeUp 0.9s 0.6s forwards;
+  }
+  .hero-title em { font-style: italic; color: var(--amethyst); }
+  .hero-sub {
+    font-size: clamp(13px, 2vw, 15px);
+    color: var(--ivory-dim);
+    max-width: 420px;
+    line-height: 1.7;
+    margin-bottom: 44px;
+    opacity: 0; animation: fadeUp 0.9s 0.8s forwards;
+  }
+  .hero-actions {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    opacity: 0; animation: fadeUp 0.9s 1s forwards;
+  }
+  .btn-primary {
+    display: inline-block;
+    padding: 14px 36px;
+    background: var(--amethyst-dim);
+    color: var(--ivory);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.25s;
+  }
+  .btn-primary:hover { background: var(--amethyst); }
+  .btn-ghost {
+    display: inline-block;
+    padding: 14px 36px;
+    border: 1px solid var(--border2);
+    color: var(--ivory-dim);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: border-color 0.25s, color 0.25s;
+  }
+  .btn-ghost:hover { border-color: var(--ivory-dim); color: var(--ivory); }
+
+  /* Hero scroll indicator */
+  .hero-scroll {
+    position: absolute; right: clamp(20px,5vw,60px); bottom: 40px; z-index: 2;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    opacity: 0; animation: fadeIn 1s 1.4s forwards;
+  }
+  .hero-scroll span {
+    font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--muted);
+    writing-mode: vertical-lr;
+  }
+  .scroll-line {
+    width: 1px; height: 50px;
+    background: linear-gradient(to bottom, var(--amethyst-dim), transparent);
+    animation: scrollAnim 2s 1.6s infinite;
+  }
+
+  /* ── TICKER ── */
+  .ticker {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .ticker-track {
+    display: inline-flex;
+    animation: ticker 30s linear infinite;
+  }
+  .ticker-track span {
+    font-family: var(--serif);
+    font-size: 13px;
+    font-style: italic;
+    color: var(--muted);
+    padding: 0 40px;
+  }
+  .ticker-track span.dot::after {
+    content: '·';
+    margin-left: 40px;
+    color: var(--amethyst);
+  }
+
+  /* ── SECTION COMMONS ── */
+  section { padding: clamp(60px,10vw,140px) clamp(20px,6vw,80px); }
+  .section-label {
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--amethyst);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-label::before {
+    content: '';
+    width: 20px; height: 1px;
+    background: var(--amethyst);
+  }
+  .section-title {
+    font-family: var(--serif);
+    font-size: clamp(32px, 5vw, 60px);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  .section-title em { font-style: italic; color: var(--amethyst); }
+
+  /* ── COLLECTIONS GRID ── */
+  .collections {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+  }
+  .collections-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: clamp(36px, 5vw, 64px);
+    gap: 20px; flex-wrap: wrap;
+  }
+  .view-all {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ivory-dim); text-decoration: none;
+    border-bottom: 1px solid var(--border2);
+    padding-bottom: 4px;
+    transition: color 0.2s, border-color 0.2s;
+    flex-shrink: 0; align-self: flex-end;
+  }
+  .view-all:hover { color: var(--amethyst); border-color: var(--amethyst); }
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+    gap: 2px;
+  }
+  .product-card {
+    position: relative; overflow: hidden;
+    cursor: pointer;
+    background: var(--bg);
+  }
+  .product-card:first-child {
+    grid-row: span 2;
+  }
+  .product-img-wrap {
+    position: relative;
+    padding-bottom: 120%;
+    overflow: hidden;
+  }
+  .product-card:first-child .product-img-wrap { padding-bottom: 100%; }
+  .product-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.5s;
+    filter: brightness(0.75);
+  }
+  .product-card:hover .product-img { transform: scale(1.04); filter: brightness(0.9); }
+  .product-info {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 20px;
+    background: linear-gradient(to top, rgba(247,244,239,0.95) 0%, transparent 100%);
+    transform: translateY(8px);
+    transition: transform 0.35s;
+  }
+  .product-card:hover .product-info { transform: translateY(0); }
+  .product-cat {
+    font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--amethyst); margin-bottom: 6px;
+  }
+  .product-name {
+    font-family: var(--serif);
+    font-size: clamp(18px, 3vw, 24px);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+  }
+  .product-arrow {
+    position: absolute; top: 20px; right: 20px;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(26,23,20,0.25);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.3s;
+    color: var(--ivory);
+  }
+  .product-card:hover .product-arrow { opacity: 1; }
+
+  /* ── PHILOSOPHY ── */
+  .philosophy {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  @media (max-width: 768px) {
+    .philosophy { grid-template-columns: 1fr; gap: 40px; }
+  }
+  .philosophy-text { }
+  .philosophy-text p {
+    font-size: clamp(14px, 2vw, 16px);
+    color: var(--ivory-dim);
+    line-height: 1.8;
+    margin-top: 28px;
+    max-width: 480px;
+  }
+  .philosophy-stat {
+    margin-top: 48px;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .stat-num {
+    font-family: var(--serif);
+    font-size: clamp(36px, 5vw, 52px);
+    font-weight: 300;
+    color: var(--amethyst);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted); margin-top: 6px;
+  }
+  .philosophy-img-wrap {
+    position: relative;
+  }
+  .philosophy-img-wrap::before {
+    content: '';
+    position: absolute;
+    top: -20px; left: -20px;
+    right: 20px; bottom: 20px;
+    border: 1px solid var(--amethyst-dim);
+    opacity: 0.3;
+    z-index: 0;
+  }
+  .philosophy-img {
+    width: 100%; aspect-ratio: 3/4;
+    object-fit: cover;
+    filter: brightness(0.8);
+    position: relative; z-index: 1;
+  }
+
+  /* ── CATEGORIES ── */
+  .categories { background: var(--surface2); border-top: 1px solid var(--border); }
+  .categories-header { margin-bottom: clamp(36px,5vw,64px); }
+  .categories-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+  }
+  @media (max-width: 900px) {
+    .categories-strip { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 500px) {
+    .categories-strip { grid-template-columns: 1fr 1fr; }
+  }
+  .cat-item {
+    position: relative; overflow: hidden;
+    cursor: pointer;
+  }
+  .cat-item::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: rgba(8,7,6,0.5);
+    transition: background 0.35s;
+  }
+  .cat-item:hover::after { background: rgba(8,7,6,0.2); }
+  .cat-img {
+    width: 100%; aspect-ratio: 3/4;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94);
+  }
+  .cat-item:hover .cat-img { transform: scale(1.05); }
+  .cat-label {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    z-index: 2;
+    padding: 24px 20px;
+    background: linear-gradient(to top, rgba(247,244,239,0.92) 0%, transparent 100%);
+  }
+  .cat-tag {
+    font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--amethyst); margin-bottom: 6px;
+  }
+  .cat-name {
+    font-family: var(--serif);
+    font-size: clamp(18px, 2.5vw, 24px);
+    font-weight: 300;
+  }
+
+  /* ── FEATURE BANNER ── */
+  .feature-banner {
+    position: relative; overflow: hidden;
+    padding: 0 !important;
+  }
+  .feature-banner-img {
+    width: 100%; height: 70vh; min-height: 400px;
+    object-fit: cover;
+    filter: brightness(0.45);
+    display: block;
+  }
+  .feature-banner-content {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    text-align: center;
+    padding: clamp(20px,5vw,60px);
+  }
+  .banner-eyebrow {
+    font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--amethyst); margin-bottom: 16px;
+  }
+  .banner-title {
+    font-family: var(--serif);
+    font-size: clamp(36px, 6vw, 80px);
+    font-weight: 300;
+    line-height: 1.05;
+    max-width: 700px;
+    margin-bottom: 28px;
+  }
+  .banner-title em { font-style: italic; color: var(--amethyst); }
+
+  /* ── CRAFTSMANSHIP ── */
+  .craft { background: var(--surface); border-top: 1px solid var(--border); }
+  .craft-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(40px, 6vw, 100px);
+    align-items: start;
+    margin-top: clamp(36px, 5vw, 64px);
+  }
+  @media (max-width: 700px) {
+    .craft-grid { grid-template-columns: 1fr; gap: 40px; }
+  }
+  .craft-items { display: flex; flex-direction: column; gap: 0; }
+  .craft-item {
+    border-top: 1px solid var(--border);
+    padding: 24px 0;
+    display: flex; gap: 24px; align-items: flex-start;
+    cursor: pointer;
+    transition: padding-left 0.3s;
+  }
+  .craft-item:hover { padding-left: 12px; }
+  .craft-num {
+    font-family: var(--serif);
+    font-size: 12px;
+    color: var(--amethyst);
+    font-weight: 500;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .craft-title {
+    font-family: var(--serif);
+    font-size: clamp(18px, 2.5vw, 22px);
+    font-weight: 400;
+    margin-bottom: 8px;
+  }
+  .craft-desc {
+    font-size: 13px; color: var(--ivory-dim); line-height: 1.7;
+  }
+  .craft-visual {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+  .craft-img {
+    width: 100%;
+    object-fit: cover;
+    filter: brightness(0.75);
+    display: block;
+  }
+  .craft-img:first-child { aspect-ratio: 1; grid-row: span 2; }
+  .craft-img:not(:first-child) { aspect-ratio: 1; }
+
+  /* ── TESTIMONIAL ── */
+  .testimonial {
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+  .testimonial-quote {
+    font-family: var(--serif);
+    font-size: clamp(22px, 4vw, 40px);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.45;
+    max-width: 780px;
+    margin: 0 auto 28px;
+    color: var(--ivory-dim);
+  }
+  .testimonial-quote strong { color: var(--ivory); font-style: normal; }
+  .testimonial-author {
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--amethyst);
+  }
+
+  /* ── NEWSLETTER ── */
+  .newsletter {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+  .newsletter-title {
+    font-family: var(--serif);
+    font-size: clamp(26px, 4vw, 44px);
+    font-weight: 300;
+    margin-bottom: 12px;
+  }
+  .newsletter-sub {
+    font-size: 13px; color: var(--ivory-dim);
+    margin-bottom: 36px;
+    max-width: 400px; margin-left: auto; margin-right: auto;
+    line-height: 1.7;
+  }
+  .newsletter-form {
+    display: flex; gap: 0;
+    max-width: 440px; margin: 0 auto;
+  }
+  .newsletter-input {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-right: none;
+    color: var(--ivory);
+    font-family: var(--sans);
+    font-size: 13px;
+    padding: 14px 20px;
+    outline: none;
+    transition: border-color 0.25s;
+  }
+  .newsletter-input::placeholder { color: var(--muted); }
+  .newsletter-input:focus { border-color: var(--amethyst-dim); }
+  .newsletter-btn {
+    background: var(--amethyst-dim);
+    border: 1px solid var(--amethyst-dim);
+    color: var(--ivory);
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 14px 24px;
+    cursor: pointer;
+    transition: background 0.25s;
+    white-space: nowrap;
+  }
+  .newsletter-btn:hover { background: var(--amethyst); }
+  @media (max-width: 480px) {
+    .newsletter-form { flex-direction: column; }
+    .newsletter-input { border-right: 1px solid var(--border); border-bottom: none; }
+    .newsletter-btn { padding: 14px; }
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    padding: clamp(40px,7vw,80px) clamp(20px,6vw,80px);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 60px;
+  }
+  @media (max-width: 900px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 500px) {
+    .footer-grid { grid-template-columns: 1fr; }
+  }
+  .footer-brand h3 {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .footer-brand h3 span {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--amethyst);
+    border-radius: 50%;
+  }
+  .footer-brand p {
+    font-size: 13px; color: var(--muted);
+    line-height: 1.7; max-width: 260px;
+    margin-bottom: 20px;
+  }
+  .footer-social {
+    display: flex; gap: 14px;
+  }
+  .footer-social a {
+    width: 34px; height: 34px;
+    border: 1px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 11px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .footer-social a:hover { border-color: var(--amethyst); color: var(--amethyst); }
+  .footer-col h4 {
+    font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 20px;
+  }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-col ul li a {
+    font-size: 13px; color: var(--ivory-dim);
+    text-decoration: none; transition: color 0.2s;
+  }
+  .footer-col ul li a:hover { color: var(--amethyst); }
+  .footer-bottom {
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .footer-copy { font-size: 11px; color: var(--muted); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes scrollAnim {
+    0% { opacity: 1; transform: scaleY(1); transform-origin: top; }
+    100% { opacity: 0; transform: scaleY(0); transform-origin: top; }
+  }
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* ── MEDIA TWEAKS ── */
+  @media (max-width: 900px) {
+    .nav-links { display: none; }
+    .nav-cta { display: none; }
+    .nav-hamburger { display: flex; }
+    .products-grid { grid-template-columns: 1fr 1fr; }
+    .product-card:first-child { grid-row: span 1; }
+  }
+  @media (max-width: 500px) {
+    .products-grid { grid-template-columns: 1fr; }
+    .philosophy-stat { grid-template-columns: 1fr 1fr; }
+    .hero-actions { flex-direction: column; }
+    .btn-primary, .btn-ghost { text-align: center; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" id="mobileClose" aria-label="Close menu">✕</button>
+  <a href="#">Collection</a>
+  <a href="#">Materials</a>
+  <a href="#">Projects</a>
+  <a href="#">About</a>
+  <a href="#">Showrooms</a>
+</div>
+
+<!-- Navigation -->
+<nav id="nav">
+  <a href="#" class="nav-logo"><span></span>Amethyst</a>
+  <ul class="nav-links">
+    <li><a href="#">Collection</a></li>
+    <li><a href="#">Materials</a></li>
+    <li><a href="#">Projects</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Showrooms</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="#" class="nav-cta">Book Consultation</a>
+    <div class="nav-hamburger" id="hamburger" aria-label="Open menu" role="button" tabindex="0">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <img
+    class="hero-img"
+    id="heroImg"
+    src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1600&q=80"
+    alt="Amethyst signature sofa"
+    loading="eager"
+    fetchpriority="high"
+  >
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">2025 Collection</p>
+    <h1 class="hero-title">Where silence<br>takes <em>form</em></h1>
+    <p class="hero-sub">Furniture conceived for those who understand that luxury is never loud — it is felt, slowly, in every detail that endures.</p>
+    <div class="hero-actions">
+      <a href="#collection" class="btn-primary">Explore Collection</a>
+      <a href="#philosophy" class="btn-ghost">Our Philosophy</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track" id="tickerTrack">
+    <span class="dot">Handcrafted in Italy</span>
+    <span class="dot">Premium Leathers</span>
+    <span class="dot">Solid Hardwoods</span>
+    <span class="dot">Bespoke Commissions</span>
+    <span class="dot">Free White-Glove Delivery</span>
+    <span class="dot">30-Year Warranty</span>
+    <span class="dot">Handcrafted in Italy</span>
+    <span class="dot">Premium Leathers</span>
+    <span class="dot">Solid Hardwoods</span>
+    <span class="dot">Bespoke Commissions</span>
+    <span class="dot">Free White-Glove Delivery</span>
+    <span class="dot">30-Year Warranty</span>
+  </div>
+</div>
+
+<!-- COLLECTION -->
+<section class="collections" id="collection">
+  <div class="collections-header">
+    <div>
+      <p class="section-label reveal">Featured Pieces</p>
+      <h2 class="section-title reveal reveal-delay-1">The <em>Amethyst</em><br>Collection</h2>
+    </div>
+    <a href="#" class="view-all reveal">View all pieces →</a>
+  </div>
+
+  <div class="products-grid">
+    <!-- Product 1 (hero card) -->
+    <div class="product-card reveal">
+      <div class="product-img-wrap">
+        <img class="product-img lazy" data-src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=900&q=80" alt="Nocturne Sofa" loading="lazy">
+      </div>
+      <div class="product-info">
+        <p class="product-cat">Sofas</p>
+        <h3 class="product-name">Nocturne Sofa</h3>
+      </div>
+      <div class="product-arrow">→</div>
+    </div>
+    <!-- Product 2 -->
+    <div class="product-card reveal reveal-delay-1">
+      <div class="product-img-wrap">
+        <img class="product-img lazy" data-src="https://images.unsplash.com/photo-1493663284031-b7e3aaa4c0ee?auto=format&fit=crop&w=700&q=80" alt="Vela Armchair" loading="lazy">
+      </div>
+      <div class="product-info">
+        <p class="product-cat">Armchairs</p>
+        <h3 class="product-name">Vela Armchair</h3>
+      </div>
+      <div class="product-arrow">→</div>
+    </div>
+    <!-- Product 3 -->
+    <div class="product-card reveal reveal-delay-2">
+      <div class="product-img-wrap">
+        <img class="product-img lazy" data-src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=700&q=80" alt="Strata Coffee Table" loading="lazy">
+      </div>
+      <div class="product-info">
+        <p class="product-cat">Tables</p>
+        <h3 class="product-name">Strata Coffee Table</h3>
+      </div>
+      <div class="product-arrow">→</div>
+    </div>
+    <!-- Product 4 -->
+    <div class="product-card reveal reveal-delay-3">
+      <div class="product-img-wrap">
+        <img class="product-img lazy" data-src="https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&w=700&q=80" alt="Serene Bed" loading="lazy">
+      </div>
+      <div class="product-info">
+        <p class="product-cat">Beds</p>
+        <h3 class="product-name">Serene Bed</h3>
+      </div>
+      <div class="product-arrow">→</div>
+    </div>
+  </div>
+</section>
+
+<!-- PHILOSOPHY -->
+<section id="philosophy">
+  <div class="philosophy">
+    <div class="philosophy-text">
+      <p class="section-label reveal">Our Philosophy</p>
+      <h2 class="section-title reveal reveal-delay-1">Crafted for<br>the <em>long life</em></h2>
+      <p class="reveal reveal-delay-2" style="font-size:clamp(14px,2vw,16px); color:var(--ivory-dim); line-height:1.8; margin-top:28px; max-width:480px;">
+        Amethyst was born from a refusal — a refusal to accept that beautiful things must be temporary. Each piece begins with weeks of material study, months of prototyping, and an uncompromising conversation between design and function.
+      </p>
+      <p class="reveal reveal-delay-3" style="font-size:clamp(14px,2vw,16px); color:var(--ivory-dim); line-height:1.8; margin-top:16px; max-width:480px;">
+        Our ateliers in Milan and Lagos work in continuous dialogue — bringing European tradition and West African spatial sensibility into a singular language of restraint and warmth.
+      </p>
+      <div class="philosophy-stat reveal reveal-delay-4">
+        <div>
+          <div class="stat-num">12+</div>
+          <div class="stat-label">Years of craft</div>
+        </div>
+        <div>
+          <div class="stat-num">4</div>
+          <div class="stat-label">Global showrooms</div>
+        </div>
+        <div>
+          <div class="stat-num">200+</div>
+          <div class="stat-label">Bespoke commissions</div>
+        </div>
+        <div>
+          <div class="stat-num">30yr</div>
+          <div class="stat-label">Product warranty</div>
+        </div>
+      </div>
+    </div>
+    <div class="philosophy-img-wrap reveal">
+      <img class="philosophy-img lazy" data-src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?auto=format&fit=crop&w=800&q=80" alt="Amethyst philosophy" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="categories">
+  <div class="categories-header">
+    <p class="section-label reveal">Browse by Category</p>
+    <h2 class="section-title reveal reveal-delay-1">Every room,<br><em>considered</em></h2>
+  </div>
+  <div class="categories-strip">
+    <div class="cat-item reveal">
+      <img class="cat-img lazy" data-src="https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=600&q=80" alt="Living" loading="lazy">
+      <div class="cat-label">
+        <p class="cat-tag">01</p>
+        <h3 class="cat-name">Living</h3>
+      </div>
+    </div>
+    <div class="cat-item reveal reveal-delay-1">
+      <img class="cat-img lazy" data-src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=600&q=80" alt="Bedroom" loading="lazy">
+      <div class="cat-label">
+        <p class="cat-tag">02</p>
+        <h3 class="cat-name">Bedroom</h3>
+      </div>
+    </div>
+    <div class="cat-item reveal reveal-delay-2">
+      <img class="cat-img lazy" data-src="https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=600&q=80" alt="Dining" loading="lazy">
+      <div class="cat-label">
+        <p class="cat-tag">03</p>
+        <h3 class="cat-name">Dining</h3>
+      </div>
+    </div>
+    <div class="cat-item reveal reveal-delay-3">
+      <img class="cat-img lazy" data-src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=600&q=80" alt="Outdoor" loading="lazy">
+      <div class="cat-label">
+        <p class="cat-tag">04</p>
+        <h3 class="cat-name">Outdoor</h3>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE BANNER -->
+<div class="feature-banner">
+  <img class="lazy" data-src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1600&q=80" alt="New Collection" loading="lazy" style="width:100%;height:70vh;min-height:400px;object-fit:cover;filter:brightness(0.45);display:block;">
+  <div class="feature-banner-content">
+    <p class="banner-eyebrow reveal">Now Available</p>
+    <h2 class="banner-title reveal reveal-delay-1">The <em>Quietude</em><br>Collection</h2>
+    <a href="#" class="btn-primary reveal reveal-delay-2" style="margin-top:8px;">Discover More</a>
+  </div>
+</div>
+
+<!-- CRAFTSMANSHIP -->
+<section class="craft">
+  <p class="section-label reveal">How We Make</p>
+  <h2 class="section-title reveal reveal-delay-1">Craft at<br>every <em>step</em></h2>
+  <div class="craft-grid">
+    <div class="craft-items">
+      <div class="craft-item reveal">
+        <span class="craft-num">01</span>
+        <div>
+          <h3 class="craft-title">Material Selection</h3>
+          <p class="craft-desc">Every journey begins with raw materials — saddle leathers sourced from Italian tanneries, hardwoods certified by FSC, and performance fabrics woven to last decades not seasons.</p>
+        </div>
+      </div>
+      <div class="craft-item reveal reveal-delay-1">
+        <span class="craft-num">02</span>
+        <div>
+          <h3 class="craft-title">Structural Engineering</h3>
+          <p class="craft-desc">Our frames are jointed, not stapled. Mortise-and-tenon construction from the first prototype ensures structural integrity across years of generous living.</p>
+        </div>
+      </div>
+      <div class="craft-item reveal reveal-delay-2">
+        <span class="craft-num">03</span>
+        <div>
+          <h3 class="craft-title">Master Upholstery</h3>
+          <p class="craft-desc">Hand-tied spring systems and hand-layered foams by artisans who have trained for years in the specific language of luxury seating.</p>
+        </div>
+      </div>
+      <div class="craft-item reveal reveal-delay-3">
+        <span class="craft-num">04</span>
+        <div>
+          <h3 class="craft-title">Quality Assurance</h3>
+          <p class="craft-desc">Every piece passes a 47-point inspection before leaving the atelier. Our warranty doesn't begin at purchase — it begins at the first stitch.</p>
+        </div>
+      </div>
+    </div>
+    <div class="craft-visual reveal">
+      <img class="craft-img lazy" data-src="https://images.unsplash.com/photo-1577140917170-285929fb55b7?auto=format&fit=crop&w=600&q=80" alt="Craftsmanship" loading="lazy">
+      <img class="craft-img lazy" data-src="https://images.unsplash.com/photo-1562184552-997c461e98b3?auto=format&fit=crop&w=400&q=80" alt="Detail" loading="lazy">
+      <img class="craft-img lazy" data-src="https://images.unsplash.com/photo-1449247709967-d4461a6a6103?auto=format&fit=crop&w=400&q=80" alt="Texture" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial">
+  <blockquote class="testimonial-quote reveal">
+    "Amethyst pieces don't <strong>announce</strong> themselves — they simply make every room feel like it was always meant to look exactly this way."
+  </blockquote>
+  <p class="testimonial-author reveal reveal-delay-1">— Architectural Digest, November 2024</p>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter">
+  <h2 class="newsletter-title reveal">Stay in the world<br>of <em style="font-family:var(--serif);color:var(--amethyst)">Amethyst</em></h2>
+  <p class="newsletter-sub reveal reveal-delay-1">New collections, material stories, and exclusive previews — delivered with intention, never with noise.</p>
+  <form class="newsletter-form reveal reveal-delay-2" onsubmit="handleSubscribe(event)">
+    <input type="email" class="newsletter-input" placeholder="your@email.com" required aria-label="Email address">
+    <button type="submit" class="newsletter-btn">Subscribe</button>
+  </form>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h3><span></span>Amethyst</h3>
+      <p>Furniture of distinction, made for those who choose to live beautifully and without compromise.</p>
+      <div class="footer-social">
+        <a href="#" aria-label="Instagram">IG</a>
+        <a href="#" aria-label="Pinterest">PT</a>
+        <a href="#" aria-label="LinkedIn">LI</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Collection</h4>
+      <ul>
+        <li><a href="#">Living Room</a></li>
+        <li><a href="#">Bedroom</a></li>
+        <li><a href="#">Dining</a></li>
+        <li><a href="#">Outdoor</a></li>
+        <li><a href="#">Accessories</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Ateliers</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Sustainability</a></li>
+        <li><a href="#">Press</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="#">Showrooms</a></li>
+        <li><a href="#">Bespoke Orders</a></li>
+        <li><a href="#">Trade Programme</a></li>
+        <li><a href="#">Care & Repair</a></li>
+        <li><a href="#">hello@amethyst.co</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2025 Amethyst. All rights reserved.</p>
+    <p class="footer-copy">Privacy Policy · Terms of Use · Cookie Settings</p>
+  </div>
+</footer>
+
+<script>
+  // ── Nav scroll ──
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
+
+  // ── Mobile menu ──
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const mobileClose = document.getElementById('mobileClose');
+  function openMenu() { mobileMenu.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeMenu() { mobileMenu.classList.remove('open'); document.body.style.overflow = ''; }
+  hamburger.addEventListener('click', openMenu);
+  hamburger.addEventListener('keydown', e => e.key === 'Enter' && openMenu());
+  mobileClose.addEventListener('click', closeMenu);
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+
+  // ── Hero image load ──
+  const heroImg = document.getElementById('heroImg');
+  function onHeroLoad() { heroImg.classList.add('loaded'); }
+  if (heroImg.complete) onHeroLoad();
+  else heroImg.addEventListener('load', onHeroLoad);
+
+  // ── Lazy images (IntersectionObserver) ──
+  const lazyImgs = document.querySelectorAll('img.lazy');
+  const imgObs = new IntersectionObserver((entries, obs) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const img = e.target;
+        img.src = img.dataset.src;
+        img.classList.remove('lazy');
+        obs.unobserve(img);
+      }
+    });
+  }, { rootMargin: '200px' });
+  lazyImgs.forEach(img => imgObs.observe(img));
+
+  // ── Scroll reveal ──
+  const reveals = document.querySelectorAll('.reveal');
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        revealObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => revealObs.observe(el));
+
+  // ── Newsletter ──
+  function handleSubscribe(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('.newsletter-btn');
+    btn.textContent = 'Thank you ✓';
+    btn.style.background = 'var(--amethyst)';
+    e.target.querySelector('.newsletter-input').value = '';
+    setTimeout(() => {
+      btn.textContent = 'Subscribe';
+      btn.style.background = '';
+    }, 3000);
+  }
+
+  // ── Smooth anchor scroll ──
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href').slice(1);
+      if (!id) return;
+      const el = document.getElementById(id);
+      if (el) {
+        e.preventDefault();
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
+</body>
+  </html>
